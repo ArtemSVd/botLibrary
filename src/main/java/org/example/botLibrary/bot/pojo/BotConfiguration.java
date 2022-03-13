@@ -1,6 +1,7 @@
 package org.example.botLibrary.bot.pojo;
 
 import lombok.Getter;
+import org.example.botLibrary.bot.TelegramBot;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -18,15 +19,29 @@ public class BotConfiguration {
         commands.add(command);
     }
 
-    public Function<UpdateParams, Object> getActionByCommandName(String name, UpdateParams updateParams) {
+    public Object applyAction(String commandName, UpdateParams updateParams) {
         Command command = commands.stream()
-                .filter(c -> c.getName().equals(name))
+                .filter(c -> c.getName().equals(commandName))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Неизвестная команда!"));
+
+        boolean isFinalState = true;
+        Enum<?> state = null;
+        Function<UpdateParams, Object> action = command.getAction();
         if (command.getScript() != null) {
-            Function<UpdateParams, Object> action = command.getScript().findActualAction(updateParams);
-            return action != null ? action : command.getAction();
-        } else {
-            return command.getAction();
+            StateAction actualStage = command.getScript().findActualStage(updateParams);
+            if (actualStage != null) {
+                action = actualStage.getAction();
+                isFinalState = actualStage.isFinal();
+                state = actualStage.getNextState();
+            }
         }
+
+        TelegramBot.dataService.setCurrentState(updateParams.getChatId(), CurrentState.builder()
+                .lastCommand(commandName)
+                .isFinalState(isFinalState)
+                .state(state)
+                .build());
+
+        return action.apply(updateParams);
     }
 }

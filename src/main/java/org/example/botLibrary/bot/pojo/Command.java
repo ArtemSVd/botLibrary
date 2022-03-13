@@ -9,11 +9,12 @@ import java.util.function.Function;
 @Builder
 @Getter
 public class Command {
-    private String name;
-    private Function<UpdateParams, Object> action;
+    private final String name;
+    private final Function<UpdateParams, Object> action;
     private Script<?> script;
 
     public Command setScript(ScriptBuilder<?> scriptBuilder) {
+        scriptBuilder.start();
         this.script = scriptBuilder.getScript();
         return this;
     }

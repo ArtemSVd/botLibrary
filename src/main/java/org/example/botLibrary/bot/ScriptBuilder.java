@@ -12,7 +12,7 @@ import java.util.function.Function;
 public abstract class ScriptBuilder<T extends Enum<T>> {
     private Script<T> script;
 
-    public ScriptBuilder() {
+    public void start() {
         script = new Script<>();
         initialize();
         script.setCurrentStateFunc(this.getCurrentState());
@@ -21,13 +21,19 @@ public abstract class ScriptBuilder<T extends Enum<T>> {
     public abstract void initialize();
     public abstract Function<String, Enum<T>> getCurrentState();
 
-    public void addStage(T enumObj, Function<UpdateParams, Object> action) {
+    public void addStage(T state, T nextState, Function<UpdateParams, Object> action) {
+        addStage(state, nextState, action, false);
+    }
+
+    public void addStage(T state, T nextState, Function<UpdateParams, Object> action, boolean isFinal) {
         if (script.getStages() == null) {
             script.setStages(new ArrayList<>());
         }
         script.getStages().add(StateAction.builder()
-                .state(enumObj)
+                .state(state)
+                .nextState(nextState)
                 .action(action)
+                .isFinal(isFinal)
                 .build());
     }
 }

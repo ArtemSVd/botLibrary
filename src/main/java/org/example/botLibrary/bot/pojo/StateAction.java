@@ -11,5 +11,7 @@ import java.util.function.Function;
 @Builder
 public class StateAction {
     private Enum<?> state;
+    private Enum<?> nextState;
     private Function<UpdateParams, Object> action;
+    private boolean isFinal;
 }

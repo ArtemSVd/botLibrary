@@ -13,4 +13,5 @@ public class HandleUpdateParams {
     private Integer messageId;
     private String command;
     private String[] arguments;
+    private boolean isCallback;
 }

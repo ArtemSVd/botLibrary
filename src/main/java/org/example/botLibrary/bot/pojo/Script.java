@@ -14,11 +14,10 @@ public class Script<T extends Enum<T>> {
     private List<StateAction> stages;
 
     @Nullable
-    public Function<UpdateParams, Object> findActualAction(UpdateParams params) {
+    public StateAction findActualStage(UpdateParams params) {
         Enum<T> enumObj = currentStateFunc.apply(params.getChatId());
         return stages.stream()
                 .filter(stage -> stage.getState().equals(enumObj))
-                .map(StateAction::getAction)
                 .findFirst().orElse(null);
     }
 }

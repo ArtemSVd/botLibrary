@@ -38,8 +38,8 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
             args = this.getArgs(update.getMessage().getText());
         } else if (update.hasCallbackQuery()) { // Если это коллбэк с кнопок
             chatId = update.getCallbackQuery().getMessage().getChatId();
-            command = this.getCommand(update.getMessage().getText());
-            args = this.getArgs(update.getMessage().getText());
+            command = this.getCommand(update.getCallbackQuery().getData());
+            args = this.getArgs(update.getCallbackQuery().getData());
             messageId = update.getCallbackQuery().getMessage().getMessageId();
         }
 
@@ -47,6 +47,7 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
                 .command(command)
                 .arguments(args)
                 .chatId(chatId)
+                .isCallback(update.hasCallbackQuery())
                 .messageId(messageId)
                 .build();
     }
@@ -59,7 +60,9 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
     private String[] getArgs(String message) {
         String[] strings = message.split(" ");
         return Arrays.stream(strings)
-                .filter(str -> !str.startsWith("/")).toArray(String[]::new);
+                .filter(str -> !str.startsWith("/"))
+                .map(String::trim)
+                .toArray(String[]::new);
     }
 
 }
