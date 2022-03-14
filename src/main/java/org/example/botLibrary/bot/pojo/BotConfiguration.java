@@ -25,21 +25,18 @@ public class BotConfiguration {
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Неизвестная команда!"));
 
         boolean isFinalState = true;
-        Enum<?> state = null;
         Function<UpdateParams, Object> action = command.getAction();
         if (command.getScript() != null) {
             StateAction actualStage = command.getScript().findActualStage(updateParams);
             if (actualStage != null) {
                 action = actualStage.getAction();
                 isFinalState = actualStage.isFinal();
-                state = actualStage.getNextState();
             }
         }
 
-        TelegramBot.dataService.setCurrentState(updateParams.getChatId(), CurrentState.builder()
+        TelegramBot.dataService.updateCurrentState(updateParams.getChatId(), CurrentState.builder()
                 .lastCommand(commandName)
                 .isFinalState(isFinalState)
-                .state(state)
                 .build());
 
         return action.apply(updateParams);

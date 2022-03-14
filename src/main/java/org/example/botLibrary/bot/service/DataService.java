@@ -8,6 +8,6 @@ public interface DataService {
     void remove(String key);
 
     CurrentState getCurrentState(String key);
-    void setCurrentState(String key, CurrentState currentState);
+    void updateCurrentState(String key, CurrentState currentState);
     void removeCurrentState(String key);
 }

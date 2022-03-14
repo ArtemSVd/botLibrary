@@ -15,7 +15,7 @@ public class Script<T extends Enum<T>> {
 
     @Nullable
     public StateAction findActualStage(UpdateParams params) {
-        Enum<T> enumObj = currentStateFunc.apply(params.getChatId());
+        Enum<T> enumObj = currentStateFunc != null ? currentStateFunc.apply(params.getChatId()) : null;
         return stages.stream()
                 .filter(stage -> stage.getState().equals(enumObj))
                 .findFirst().orElse(null);

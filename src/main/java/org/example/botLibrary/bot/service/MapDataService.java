@@ -39,8 +39,18 @@ public class MapDataService implements DataService {
     }
 
     @Override
-    public void setCurrentState(String key, CurrentState currentState) {
-        dataMap.put(CURRENT_DATA + key, currentState);
+    public void updateCurrentState(String key, CurrentState currentState) {
+        CurrentState savedCurrentState = this.getCurrentState(key);
+        if (currentState.getLastCommand() != null) {
+            savedCurrentState.setLastCommand(currentState.getLastCommand());
+        }
+        if (currentState.getState() != null) {
+            savedCurrentState.setState(currentState.getState());
+        }
+        if (currentState.isFinalState() != savedCurrentState.isFinalState()) {
+            savedCurrentState.setFinalState(currentState.isFinalState());
+        }
+        dataMap.put(CURRENT_DATA + key, savedCurrentState);
     }
 
     @Override

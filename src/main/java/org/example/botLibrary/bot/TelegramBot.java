@@ -23,7 +23,11 @@ public abstract class TelegramBot extends LongPoolingBot {
         dataService = this.getDataService();
     }
 
-    public void validateConfig() {
+    public static void setNextState(String key, Enum<?> state) {
+        dataService.updateCurrentState(key, CurrentState.builder().state(state).build());
+    }
+
+    private void validateConfig() {
         if (configuration == null || configuration.getCommands() == null || configuration.getCommands().isEmpty()) {
             return;
         }
