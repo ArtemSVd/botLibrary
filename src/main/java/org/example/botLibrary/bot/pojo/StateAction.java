@@ -11,5 +11,5 @@ import java.util.function.Function;
 @Builder
 public class StateAction {
     private Enum<?> state;
-    private Function<UpdateParams, Object> action;
+    private Function<UpdateParams, CommandResponse> action;
 }

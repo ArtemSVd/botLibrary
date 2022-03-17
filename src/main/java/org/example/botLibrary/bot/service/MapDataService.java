@@ -39,16 +39,10 @@ public class MapDataService implements DataService {
     }
 
     @Override
-    public void updateLastCommand(String key, String lastCommand) {
+    public void updateCurrentState(String key, CurrentState currentState) {
         CurrentState savedCurrentState = this.getCurrentState(key);
-        savedCurrentState.setLastCommand(lastCommand);
-        dataMap.put(CURRENT_DATA + key, savedCurrentState);
-    }
-
-    @Override
-    public void updateState(String key, Enum<?> state) {
-        CurrentState savedCurrentState = this.getCurrentState(key);
-        savedCurrentState.setState(state);
+        savedCurrentState.setLastCommand(currentState.getLastCommand());
+        savedCurrentState.setState(currentState.getState());
         dataMap.put(CURRENT_DATA + key, savedCurrentState);
     }
 

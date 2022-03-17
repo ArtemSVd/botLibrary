@@ -10,7 +10,7 @@ import java.util.function.Function;
 @Getter
 public class Command {
     private final String name;
-    private final Function<UpdateParams, Object> action;
+    private final Function<UpdateParams, CommandResponse> action;
     private Script<?> script;
 
     public Command setScript(ScriptBuilder<?> scriptBuilder) {

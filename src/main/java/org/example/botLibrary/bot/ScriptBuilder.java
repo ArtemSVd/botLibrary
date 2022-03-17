@@ -1,10 +1,7 @@
 package org.example.botLibrary.bot;
 
 import lombok.Getter;
-import org.example.botLibrary.bot.pojo.CurrentState;
-import org.example.botLibrary.bot.pojo.Script;
-import org.example.botLibrary.bot.pojo.StateAction;
-import org.example.botLibrary.bot.pojo.UpdateParams;
+import org.example.botLibrary.bot.pojo.*;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -27,7 +24,7 @@ public abstract class ScriptBuilder<T extends Enum<T>> {
         };
     }
 
-    public void addStage(T state, Function<UpdateParams, Object> action) {
+    public void addStage(T state, Function<UpdateParams, CommandResponse> action) {
         if (script.getStages() == null) {
             script.setStages(new ArrayList<>());
         }

@@ -2,6 +2,7 @@ package org.example.botLibrary.bot;
 
 import org.example.botLibrary.bot.pojo.BotConfiguration;
 import org.example.botLibrary.bot.pojo.Command;
+import org.example.botLibrary.bot.pojo.CommandResponse;
 import org.example.botLibrary.bot.pojo.CurrentState;
 import org.example.botLibrary.bot.pojo.HandleUpdateParams;
 import org.example.botLibrary.bot.pojo.UpdateParams;
@@ -21,10 +22,6 @@ public abstract class TelegramBot extends LongPoolingBot {
         initialize();
         validateConfig();
         dataService = this.getDataService();
-    }
-
-    public static void setNextState(String key, Enum<?> state) {
-        dataService.updateState(key, state);
     }
 
     private void validateConfig() {
@@ -50,7 +47,7 @@ public abstract class TelegramBot extends LongPoolingBot {
         return addCommand(name, null);
     }
 
-    public Command addCommand(String name, Function<UpdateParams, Object> defaultAction) {
+    public Command addCommand(String name, Function<UpdateParams, CommandResponse> defaultAction) {
         Command command = Command.builder()
                 .name(name)
                 .action(defaultAction)
@@ -79,11 +76,22 @@ public abstract class TelegramBot extends LongPoolingBot {
                 this.execute(nonCommandUpdate(updateParams));
                 dataService.removeCurrentState(updateParams.getChatId());
             } else {
-                this.execute(configuration.applyAction(command, updateParams));
+                this.execute(processCommandUpdate(command, updateParams));
             }
         } catch (TelegramApiException ignored) {
-
+            // TODO: продумать логирование ошибок
         }
+    }
+
+    private Object processCommandUpdate(String command, UpdateParams updateParams) {
+        CommandResponse commandResponse = configuration.applyAction(command, updateParams);
+
+        dataService.updateCurrentState(updateParams.getChatId(), CurrentState.builder()
+                .lastCommand(command)
+                .state(commandResponse.getNextState())
+                .build());
+
+        return commandResponse.getMessage();
     }
 
     private void execute(Object object) throws TelegramApiException {
