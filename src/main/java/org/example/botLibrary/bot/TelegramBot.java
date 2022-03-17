@@ -24,7 +24,7 @@ public abstract class TelegramBot extends LongPoolingBot {
     }
 
     public static void setNextState(String key, Enum<?> state) {
-        dataService.updateCurrentState(key, CurrentState.builder().state(state).build());
+        dataService.updateState(key, state);
     }
 
     private void validateConfig() {

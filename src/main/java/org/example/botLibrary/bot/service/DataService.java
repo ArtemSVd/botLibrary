@@ -8,6 +8,7 @@ public interface DataService {
     void remove(String key);
 
     CurrentState getCurrentState(String key);
-    void updateCurrentState(String key, CurrentState currentState);
+    void updateLastCommand(String key, String lastCommand);
+    void updateState(String key, Enum<?> state);
     void removeCurrentState(String key);
 }

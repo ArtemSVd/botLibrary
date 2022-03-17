@@ -32,9 +32,7 @@ public class BotConfiguration {
             }
         }
 
-        TelegramBot.dataService.updateCurrentState(updateParams.getChatId(), CurrentState.builder()
-                .lastCommand(commandName)
-                .build());
+        TelegramBot.dataService.updateLastCommand(updateParams.getChatId(), commandName);
 
         return action.apply(updateParams);
     }
