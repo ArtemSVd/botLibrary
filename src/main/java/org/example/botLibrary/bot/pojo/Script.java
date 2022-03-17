@@ -11,11 +11,12 @@ import java.util.function.Function;
 @Setter
 public class Script<T extends Enum<T>> {
     private Function<String, Enum<T>> currentStateFunc;
+    private Enum<T> startState;
     private List<StateAction> stages;
 
     @Nullable
     public StateAction findActualStage(UpdateParams params) {
-        Enum<T> enumObj = currentStateFunc != null ? currentStateFunc.apply(params.getChatId()) : null;
+        Enum<T> enumObj = currentStateFunc != null ? currentStateFunc.apply(params.getChatId()) : startState;
         return stages.stream()
                 .filter(stage -> stage.getState().equals(enumObj))
                 .findFirst().orElse(null);
