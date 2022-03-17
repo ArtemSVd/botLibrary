@@ -28,17 +28,12 @@ public abstract class ScriptBuilder<T extends Enum<T>> {
     }
 
     public void addStage(T state, Function<UpdateParams, Object> action) {
-        addStage(state, action, false);
-    }
-
-    public void addStage(T state, Function<UpdateParams, Object> action, boolean isFinal) {
         if (script.getStages() == null) {
             script.setStages(new ArrayList<>());
         }
         script.getStages().add(StateAction.builder()
                 .state(state)
                 .action(action)
-                .isFinal(isFinal)
                 .build());
     }
 }

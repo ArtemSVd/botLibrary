@@ -12,5 +12,4 @@ import java.util.function.Function;
 public class StateAction {
     private Enum<?> state;
     private Function<UpdateParams, Object> action;
-    private boolean isFinal;
 }
