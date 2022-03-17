@@ -1,7 +1,7 @@
 package org.example.botLibrary.bot;
 
 import lombok.RequiredArgsConstructor;
-import org.example.botLibrary.bot.pojo.HandleUpdateParams;
+import org.example.botLibrary.bot.pojo.UpdateParams;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -24,9 +24,9 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
         this.onUpdateReceived(this.getParams(update));
     }
 
-    public abstract void onUpdateReceived(HandleUpdateParams params);
+    public abstract void onUpdateReceived(UpdateParams params);
 
-    private HandleUpdateParams getParams(Update update) {
+    private UpdateParams getParams(Update update) {
         Long chatId = null;
         Integer messageId = null;
         String command = null;
@@ -43,10 +43,10 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
             messageId = update.getCallbackQuery().getMessage().getMessageId();
         }
 
-        return HandleUpdateParams.builder()
+        return UpdateParams.builder()
                 .command(command)
                 .arguments(args)
-                .chatId(chatId)
+                .chatId(String.valueOf(chatId))
                 .isCallback(update.hasCallbackQuery())
                 .messageId(messageId)
                 .build();

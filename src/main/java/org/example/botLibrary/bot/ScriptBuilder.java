@@ -20,9 +20,9 @@ public abstract class ScriptBuilder<T extends Enum<T>> {
     public abstract void initialize();
     public abstract Enum<T> getStartState();
 
-    protected Function<String, Enum<T>> getCurrentState() {
-        return key -> {
-            CurrentState currentState = TelegramBot.dataService.getCurrentState(key);
+    protected Function<UpdateParams, Enum<T>> getCurrentState() {
+        return params -> {
+            CurrentState currentState = params.getCurrentState();
             return currentState != null && currentState.getState() != null ?
                     (Enum<T>) currentState.getState() : script.getStartState();
         };

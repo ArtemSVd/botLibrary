@@ -10,4 +10,5 @@ import lombok.Setter;
 public class CommandResponse {
     private Enum<?> nextState;
     private Object message;
+    private Object entityForSave;
 }

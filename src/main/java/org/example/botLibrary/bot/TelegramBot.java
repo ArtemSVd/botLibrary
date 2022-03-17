@@ -4,7 +4,6 @@ import org.example.botLibrary.bot.pojo.BotConfiguration;
 import org.example.botLibrary.bot.pojo.Command;
 import org.example.botLibrary.bot.pojo.CommandResponse;
 import org.example.botLibrary.bot.pojo.CurrentState;
-import org.example.botLibrary.bot.pojo.HandleUpdateParams;
 import org.example.botLibrary.bot.pojo.UpdateParams;
 import org.example.botLibrary.bot.service.DataService;
 import org.example.botLibrary.bot.service.MapDataService;
@@ -16,7 +15,7 @@ import java.util.function.Function;
 
 public abstract class TelegramBot extends LongPoolingBot {
     private BotConfiguration configuration;
-    public static DataService dataService;
+    private DataService dataService;
 
     public void start() {
         initialize();
@@ -60,18 +59,11 @@ public abstract class TelegramBot extends LongPoolingBot {
     }
 
     @Override
-    public void onUpdateReceived(HandleUpdateParams params) {
+    public void onUpdateReceived(UpdateParams updateParams) {
         try {
-            UpdateParams updateParams = UpdateParams.builder()
-                    .arguments(params.getArguments())
-                    .chatId(String.valueOf(params.getChatId()))
-                    .isCallback(params.isCallback())
-                    .messageId(params.getMessageId())
-                    .build();
-
             CurrentState currentState = dataService.getCurrentState(updateParams.getChatId());
             String command = currentState.getLastCommand() != null && currentState.getState() != null
-                    ? currentState.getLastCommand() : params.getCommand();
+                    ? currentState.getLastCommand() : updateParams.getCommand();
             if (command == null) {
                 this.execute(nonCommandUpdate(updateParams));
                 dataService.removeCurrentState(updateParams.getChatId());
@@ -84,12 +76,22 @@ public abstract class TelegramBot extends LongPoolingBot {
     }
 
     private Object processCommandUpdate(String command, UpdateParams updateParams) {
+        String dataKey = updateParams.getCommand() + "_" + updateParams.getChatId();
+        updateParams.setEntity(dataService.get(dataKey));
+        updateParams.setCurrentState(dataService.getCurrentState(updateParams.getChatId()));
         CommandResponse commandResponse = configuration.applyAction(command, updateParams);
 
         dataService.updateCurrentState(updateParams.getChatId(), CurrentState.builder()
                 .lastCommand(command)
                 .state(commandResponse.getNextState())
                 .build());
+
+        if (commandResponse.getEntityForSave() != null) {
+            dataService.put(updateParams.getCommand() + "_" + updateParams.getChatId(),
+                    commandResponse.getEntityForSave());
+        } else {
+            dataService.remove(dataKey);
+        }
 
         return commandResponse.getMessage();
     }
