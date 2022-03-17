@@ -10,7 +10,7 @@ public class MapDataService implements DataService {
     private static MapDataService instance;
     private final Map<String, Object> dataMap;
 
-    private static final String CURRENT_DATA = "CURRENT_DATA";
+    private static final String CURRENT_DATA = "CURRENT_DATA_";
 
     private MapDataService() {
         dataMap = new HashMap<>();
@@ -46,9 +46,6 @@ public class MapDataService implements DataService {
         }
         if (currentState.getState() != null) {
             savedCurrentState.setState(currentState.getState());
-        }
-        if (currentState.isFinalState() != savedCurrentState.isFinalState()) {
-            savedCurrentState.setFinalState(currentState.isFinalState());
         }
         dataMap.put(CURRENT_DATA + key, savedCurrentState);
     }

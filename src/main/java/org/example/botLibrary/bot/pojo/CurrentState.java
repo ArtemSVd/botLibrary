@@ -14,5 +14,4 @@ import lombok.Setter;
 public class CurrentState {
     private String lastCommand;
     private Enum<?> state;
-    private boolean isFinalState = true;
 }

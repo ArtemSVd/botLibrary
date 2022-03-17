@@ -73,7 +73,7 @@ public abstract class TelegramBot extends LongPoolingBot {
                     .build();
 
             CurrentState currentState = dataService.getCurrentState(updateParams.getChatId());
-            String command = currentState.getLastCommand() != null && !currentState.isFinalState()
+            String command = currentState.getLastCommand() != null && currentState.getState() != null
                     ? currentState.getLastCommand() : params.getCommand();
             if (command == null) {
                 this.execute(nonCommandUpdate(updateParams));
