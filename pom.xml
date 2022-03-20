@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>bot-library</artifactId>
-    <version>1.1.28</version>
+    <version>1.1.38</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Telegram bot library</description>

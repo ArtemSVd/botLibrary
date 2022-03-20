@@ -31,11 +31,15 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
         Integer messageId = null;
         String command = null;
         String[] args = null;
+        String fileId = null;
 
         if (update.hasMessage()) { // Если сообщение пришло в ЛС боту
             chatId = update.getMessage().getChatId();
             command = this.getCommand(update.getMessage().getText());
             args = this.getArgs(update.getMessage().getText());
+            if (update.getMessage().getDocument() != null) {
+                fileId = update.getMessage().getDocument().getFileId();
+            }
         } else if (update.hasCallbackQuery()) { // Если это коллбэк с кнопок
             chatId = update.getCallbackQuery().getMessage().getChatId();
             command = this.getCommand(update.getCallbackQuery().getData());
@@ -49,15 +53,24 @@ abstract class LongPoolingBot extends TelegramLongPollingBot {
                 .chatId(String.valueOf(chatId))
                 .isCallback(update.hasCallbackQuery())
                 .messageId(messageId)
+                .fileId(fileId)
+                .botName(this.getBotUsername())
+                .botToken(this.getBotToken())
                 .build();
     }
 
     private String getCommand(String message) {
+        if (message == null) {
+            return null;
+        }
         String[] strings = message.split(" ");
         return strings.length > 0 && strings[0].startsWith("/") ? strings[0] : null;
     }
 
     private String[] getArgs(String message) {
+        if (message == null) {
+            return null;
+        }
         String[] strings = message.split(" ");
         return Arrays.stream(strings)
                 .filter(str -> !str.startsWith("/"))

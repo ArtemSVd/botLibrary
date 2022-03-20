@@ -13,7 +13,11 @@ public class UpdateParams {
     private String[] arguments;
     private boolean isCallback;
     private Integer messageId;
+    private String fileId;
 
     private Object entity;
     private CurrentState currentState;
+
+    private String botToken;
+    private String botName;
 }
